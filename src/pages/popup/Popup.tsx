@@ -122,6 +122,7 @@ interface SettingsUpdate {
   markerLevelEnabled?: boolean;
   resetPosition?: boolean;
   folderEnabled?: boolean;
+  autoCategorizationEnabled?: boolean;
   hideArchivedConversations?: boolean;
   customWebsites?: string[];
   watermarkRemoverEnabled?: boolean;
@@ -146,6 +147,7 @@ export default function Popup() {
   const [draggableTimeline, setDraggableTimeline] = useState<boolean>(false);
   const [markerLevelEnabled, setMarkerLevelEnabled] = useState<boolean>(false);
   const [folderEnabled, setFolderEnabled] = useState<boolean>(true);
+  const [autoCategorizationEnabled, setAutoCategorizationEnabled] = useState<boolean>(false);
   const [hideArchivedConversations, setHideArchivedConversations] = useState<boolean>(false);
   const [customWebsites, setCustomWebsites] = useState<string[]>([]);
   const [newWebsiteInput, setNewWebsiteInput] = useState<string>('');
@@ -225,6 +227,8 @@ export default function Popup() {
         payload.geminiTimelineMarkerLevel = settings.markerLevelEnabled;
       if (typeof settings.folderEnabled === 'boolean')
         payload.geminiFolderEnabled = settings.folderEnabled;
+      if (typeof settings.autoCategorizationEnabled === 'boolean')
+        payload.gvAutoCategorizationEnabled = settings.autoCategorizationEnabled;
       if (typeof settings.hideArchivedConversations === 'boolean')
         payload.geminiFolderHideArchivedConversations = settings.hideArchivedConversations;
       if (settings.resetPosition) payload.geminiTimelinePosition = null;
@@ -472,6 +476,7 @@ export default function Popup() {
           geminiTimelineDraggable: false,
           geminiTimelineMarkerLevel: false,
           geminiFolderEnabled: true,
+          gvAutoCategorizationEnabled: false,
           geminiFolderHideArchivedConversations: false,
           gvPromptCustomWebsites: [],
           gvFormulaCopyFormat: 'latex',
@@ -500,6 +505,7 @@ export default function Popup() {
           setDraggableTimeline(!!res?.geminiTimelineDraggable);
           setMarkerLevelEnabled(!!res?.geminiTimelineMarkerLevel);
           setFolderEnabled(res?.geminiFolderEnabled !== false);
+          setAutoCategorizationEnabled(res?.gvAutoCategorizationEnabled === true);
           setHideArchivedConversations(!!res?.geminiFolderHideArchivedConversations);
           const loadedCustomWebsites = Array.isArray(res?.gvPromptCustomWebsites)
             ? res.gvPromptCustomWebsites.filter((w: unknown) => typeof w === 'string')
@@ -991,6 +997,25 @@ export default function Popup() {
                 onChange={(e) => {
                   setFolderEnabled(e.target.checked);
                   apply({ folderEnabled: e.target.checked });
+                }}
+              />
+            </div>
+            <div className="group flex items-center justify-between">
+              <div className="flex-1">
+                <Label
+                  htmlFor="auto-categorization-enabled"
+                  className="group-hover:text-primary cursor-pointer text-sm font-medium transition-colors"
+                >
+                  {t('autoCategorization')}
+                </Label>
+                <p className="text-muted-foreground mt-1 text-xs">{t('autoCategorizationHint')}</p>
+              </div>
+              <Switch
+                id="auto-categorization-enabled"
+                checked={autoCategorizationEnabled}
+                onChange={(e) => {
+                  setAutoCategorizationEnabled(e.target.checked);
+                  apply({ autoCategorizationEnabled: e.target.checked });
                 }}
               />
             </div>

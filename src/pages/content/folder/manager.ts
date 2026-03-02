@@ -2320,7 +2320,7 @@ export class FolderManager {
   }
 
   // Batch add conversations to folder (for multi-select support)
-  private addConversationsToFolder(
+  public addConversationsToFolder(
     folderId: string,
     conversations: ConversationReference[],
     sourceFolderId?: string,
